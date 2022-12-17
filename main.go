@@ -26,13 +26,13 @@ type GitFileStatus struct {
 
 func main() {
 	var repo string
-	flag.StringVar(&repo, "repo", "", "specify the repository")
+	flag.StringVar(&repo, "repo", "r", "specify the repository")
 
 	var since string
-	flag.StringVar(&since, "since", "", "specify the since time")
+	flag.StringVar(&since, "since", "s", "specify the since time")
 
 	var author string
-	flag.StringVar(&author, "author", "", "specify the since time")
+	flag.StringVar(&author, "author", "a", "specify the since time")
 
 	flag.Parse()
 
@@ -79,16 +79,11 @@ func main() {
 	}
 }
 
-// CommandLineOptions represents the command-line options for the program.
-type CommandLineOptions struct {
-	Since  string `kong:"help='Since Time', default='yesterday'"`
-	Author string `kong:"help='Author to search git logs for', default='David Li'"`
-	Repo   string `kong:"help='local path to repository to parse'"`
-}
-
 // AllLogs returns the output of the "git log" command.
 func AllLogs(since, author string) string {
-	cmd := exec.Command("git", "log", "--since", since, "--author", author)
+	// default to davidli012345@gmail.com
+
+	cmd := exec.Command("git", "log", "--since", since, "--author", author, "--pretty=format:%H%n%an%n%ae%n%ad%n%s")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
